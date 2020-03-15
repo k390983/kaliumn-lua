@@ -41,9 +41,9 @@ make run
 Any contributions are **greatly appreciated**.
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/cmd.h`)
-3. Commit your Changes (`git commit -m 'Add some cmd.h'`)
-4. Push to the Branch (`git push origin feature/cmd.h`)
+2. Create your Feature Branch (`git checkout -b feature/kaliumn-lua.h`)
+3. Commit your Changes (`git commit -m 'Add some kaliumn-lua.h'`)
+4. Push to the Branch (`git push origin feature/kaliumn-lua.h`)
 5. Open a Pull Request
 
 ----
