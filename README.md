@@ -14,3 +14,39 @@
 <p align="center">This library is still in a very early state. <b>Any feedback or sugestions are welcome!</b></p>
 
 <br>
+
+### Usage
+
+Simply include include the *kaliumn.so* file in your lua project. Then, in your lua file add:
+
+```lua
+kaliumn = require "kaliumn"
+```
+
+### Compiling (gcc)
+
+To compile the *kaliumn.so* from source, move to the project repository and:
+
+```
+make
+```
+
+To compile and run the automaticaly run *test.lua*:
+
+```
+make run
+```
+
+### Contributing
+Any contributions are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/cmd.h`)
+3. Commit your Changes (`git commit -m 'Add some cmd.h'`)
+4. Push to the Branch (`git push origin feature/cmd.h`)
+5. Open a Pull Request
+
+----
+
+k390983(https://github.com/k390983) - kaikitagawajones@gmail.com    
+Distributed under the MIT license. See `LICENSE` for more information.
