@@ -3,6 +3,7 @@
   <h3 align="center"><b>kaliumn-lua</b></h1>
   <p align="center">A lua library to easily develop console games</p>
   <p align="center">
+  <img src="https://img.shields.io/github/license/k390983/kaliumn-lua"> <img src="https://img.shields.io/github/repo-size/k390983/kaliumn-lua"> <img src="https://img.shields.io/github/issues/k390983/kaliumn-lua">
   </p>
 </p>
 
