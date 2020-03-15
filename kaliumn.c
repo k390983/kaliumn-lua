@@ -293,19 +293,16 @@ int E_display() {
 
 //-------- textures ----------------------------------------------------------//
 
-int E_drawTexture(lua_State *L) {
+/*int E_drawTexture(lua_State *L) {
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
 
 	char texture[25];
 	sprintf(texture, "%s", luaL_checkstring(L, 3));
 
-	
-
-
 	return(0);
 
-}
+}*/
 
 //-------- drawing -----------------------------------------------------------//
 

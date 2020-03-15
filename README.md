@@ -3,7 +3,7 @@
   <h3 align="center"><b>kaliumn-lua</b></h1>
   <p align="center">A lua library to easily develop console games</p>
   <p align="center">
-  <img src="https://img.shields.io/github/license/k390983/kaliumn-lua"> <img src="https://img.shields.io/github/repo-size/k390983/kaliumn-lua"> <img src="https://img.shields.io/github/issues/k390983/kaliumn-lua"> <img src="https://img.shields.io/badge/Lua-5.3.5-blue"
+  <img src="https://img.shields.io/github/license/k390983/kaliumn-lua"> <img src="https://img.shields.io/github/repo-size/k390983/kaliumn-lua"> <img src="https://img.shields.io/github/issues/k390983/kaliumn-lua"> <img src="https://img.shields.io/badge/Lua-5.3-blue"
   </p>
 </p>
 
@@ -17,21 +17,27 @@
 
 ### Usage
 
-Simply include include the *kaliumn.so* file in your lua project. Then, in your lua file add:
+Simply include include the `kaliumn.so` file in your lua project. Then, in your lua file add:
 
 ```lua
-kaliumn = require "kaliumn"
+kal = require "kaliumn"
 ```
 
 ### Compiling (gcc)
 
-To compile the *kaliumn.so* from source, move to the project repository and:
+### Dependencies
+
+- gcc
+- lua5.3
+- liblua5.3-dev
+
+To compile the `kaliumn.so` from source, move to the project repository and:
 
 ```
 make
 ```
 
-To compile and run automaticaly run *test.lua*:
+To compile and run automaticaly run `test.lua`:
 
 ```
 make run
