@@ -31,7 +31,7 @@ To compile the *kaliumn.so* from source, move to the project repository and:
 make
 ```
 
-To compile and run the automaticaly run *test.lua*:
+To compile and run automaticaly run *test.lua*:
 
 ```
 make run
