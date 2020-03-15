@@ -25,7 +25,7 @@ kal = require "kaliumn"
 
 ### Compiling (gcc)
 
-### Dependencies
+#### Dependencies
 
 - gcc
 - lua5.3
