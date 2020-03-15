@@ -9,4 +9,12 @@ k.printString("width: "..k.getWinX()..", height: "..k.getWinY().."\n\n")
 
 k.waitForKeyPress()
 
+k.initCanvas(25, 25, "white")
+
+k.drawPixel(5, 5, "blue")
+
+k.display()
+
+k.waitForKeyPress()
+
 k.terminate()

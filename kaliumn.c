@@ -17,52 +17,30 @@
 // colors
 //----------------------------------------------------------------------------//
 
-// foreground
-
-#define F_DEFAULT 39
-#define F_BLACK 30
-#define F_RED 31
-#define F_GREEN 32
-#define F_YELLOW 33
-#define F_BLUE 34
-#define F_MAGENTA 35
-#define F_CYAN 36
-#define F_LIGHT_GRAY 37
-#define F_DARK_GRAY 90
-#define F_LIGHT_RED 91
-#define F_LIGHT_GREEN 92
-#define F_LIGHT_YELLOW 93
-#define F_LIGHT_BLUE 94
-#define F_LIGHT_MAGENTA 95
-#define F_LIGHT_CYAN 96
-#define F_WHITE 97
-
-// background
-
-#define B_DEFAULT 49
-#define B_BLACK 40
-#define B_RED 41
-#define B_GREEN 42
-#define B_YELLOW 43
-#define B_BLUE 44
-#define B_MAGENTA 45
-#define B_CYAN 46
-#define B_LIGHT_GRAY 47
-#define B_DARK_GRAY 100
-#define B_LIGHT_RED 101
-#define B_LIGHT_GREEN 102
-#define B_LIGHT_YELLOW 103
-#define B_LIGHT_BLUE 104
-#define B_LIGHT_MAGENTA 105
-#define B_LIGHT_CYAN 106
-#define B_WHITE 107
+#define DEFAULT 39
+#define BLACK 30
+#define RED 31
+#define GREEN 32
+#define YELLOW 33
+#define BLUE 34
+#define MAGENTA 35
+#define CYAN 36
+#define LIGHT_GRAY 37
+#define DARK_GRAY 90
+#define LIGHT_RED 91
+#define LIGHT_GREEN 92
+#define LIGHT_YELLOW 93
+#define LIGHT_BLUE 94
+#define LIGHT_MAGENTA 95
+#define LIGHT_CYAN 96
+#define WHITE 97
 
 //----------------------------------------------------------------------------//
 // global variables
 //----------------------------------------------------------------------------//
 
-int *KAL_canvas;
-int *KAL_previousCanvas;
+int *canvas;
+int *previousCanvas;
 
 //----------------------------------------------------------------------------//
 // internal functions / macros
@@ -74,116 +52,9 @@ int *KAL_previousCanvas;
 
 #define clearScreen() printf("\033[2J");
 
-void setColor(const char FOREGROUND[], const char BACKGROUND[]) {
-	// foreground
-
-	if (strcmp(FOREGROUND, "black") == 0){
-		printf("\e[%dm", F_BLACK);
-		
-	} else if (strcmp(FOREGROUND, "red") == 0){
-		printf("\e[%dm", F_RED);
-	
-	} else if (strcmp(FOREGROUND, "green") == 0){
-		printf("\e[%dm", F_GREEN);
-		
-	} else if (strcmp(FOREGROUND, "yellow") == 0){
-		printf("\e[%dm", F_YELLOW);
-		
-	} else if (strcmp(FOREGROUND, "blue") == 0){
-		printf("\e[%dm", F_BLUE);
-		
-	} else if (strcmp(FOREGROUND, "magenta") == 0){
-		printf("\e[%dm", F_MAGENTA);
-		
-	} else if (strcmp(FOREGROUND, "cyan") == 0){
-		printf("\e[%dm", F_CYAN);
-		
-	} else if (strcmp(FOREGROUND, "light gray") == 0){
-		printf("\e[%dm", F_LIGHT_GRAY);
-		
-	} else if (strcmp(FOREGROUND, "dark gray") == 0){
-		printf("\e[%dm", F_DARK_GRAY);
-		
-	} else if (strcmp(FOREGROUND, "light red") == 0){
-		printf("\e[%dm", F_LIGHT_RED);
-		
-	} else if (strcmp(FOREGROUND, "light green") == 0){
-		printf("\e[%dm", F_LIGHT_GREEN);
-	
-	} else if (strcmp(FOREGROUND, "light yellow") == 0){
-		printf("\e[%dm", F_LIGHT_YELLOW);
-		
-	} else if (strcmp(FOREGROUND, "light blue") == 0){
-		printf("\e[%dm", F_LIGHT_BLUE);
-		
-	} else if (strcmp(FOREGROUND, "light magenta") == 0){
-		printf("\e[%dm", F_LIGHT_MAGENTA);
-		
-	} else if (strcmp(FOREGROUND, "light cyan") == 0){
-		printf("\e[%dm", F_LIGHT_CYAN);
-		
-	} else if (strcmp(FOREGROUND, "white") == 0){
-		printf("\e[%dm", F_DEFAULT);
-
-	} else {
-		printf("\e[%dm", F_DEFAULT);
-	
-	}
-
-	// background
-
-	if (strcmp(BACKGROUND, "black") == 0){
-		printf("\e[%dm", B_BLACK);
-		
-	} else if (strcmp(BACKGROUND, "red") == 0){
-		printf("\e[%dm", B_RED);
-	
-	} else if (strcmp(BACKGROUND, "green") == 0){
-		printf("\e[%dm", B_GREEN);
-		
-	} else if (strcmp(BACKGROUND, "yellow") == 0){
-		printf("\e[%dm", B_YELLOW);
-		
-	} else if (strcmp(BACKGROUND, "blue") == 0){
-		printf("\e[%dm", B_BLUE);
-		
-	} else if (strcmp(BACKGROUND, "magenta") == 0){
-		printf("\e[%dm", B_MAGENTA);
-		
-	} else if (strcmp(BACKGROUND, "cyan") == 0){
-		printf("\e[%dm", B_CYAN);
-		
-	} else if (strcmp(BACKGROUND, "light gray") == 0){
-		printf("\e[%dm", B_LIGHT_GRAY);
-		
-	} else if (strcmp(BACKGROUND, "dark gray") == 0){
-		printf("\e[%dm", B_DARK_GRAY);
-		
-	} else if (strcmp(BACKGROUND, "light red") == 0){
-		printf("\e[%dm", B_LIGHT_RED);
-		
-	} else if (strcmp(BACKGROUND, "light green") == 0){
-		printf("\e[%dm", B_LIGHT_GREEN);
-	
-	} else if (strcmp(BACKGROUND, "light yellow") == 0){
-		printf("\e[%dm", B_LIGHT_YELLOW);
-		
-	} else if (strcmp(BACKGROUND, "light blue") == 0){
-		printf("\e[%dm", B_LIGHT_BLUE);
-		
-	} else if (strcmp(BACKGROUND, "light magenta") == 0){
-		printf("\e[%dm", B_LIGHT_MAGENTA);
-		
-	} else if (strcmp(BACKGROUND, "light cyan") == 0){
-		printf("\e[%dm", B_LIGHT_CYAN);
-		
-	} else if (strcmp(BACKGROUND, "white") == 0){
-		printf("\e[%dm", B_DEFAULT);
-
-	} else {
-		printf("\e[%dm", B_DEFAULT);
-	
-	}
+void setColor(const int FOREGROUND, const int BACKGROUND) {
+	printf("\e[%dm", FOREGROUND);
+	printf("\e[%dm", BACKGROUND + 10);
 
 }
 
@@ -197,9 +68,67 @@ void setTitle(const char TITLE[]) {
 
 }
 
+int colorCode(const char COLOR[]) {
+	if (strcmp(COLOR, "black") == 0){
+		return(BLACK);
+		
+	} else if (strcmp(COLOR, "red") == 0){
+		return(RED);
+	
+	} else if (strcmp(COLOR, "green") == 0){
+		return(GREEN);
+		
+	} else if (strcmp(COLOR, "yellow") == 0){
+		return(YELLOW);
+		
+	} else if (strcmp(COLOR, "blue") == 0){
+		return(BLUE);
+		
+	} else if (strcmp(COLOR, "magenta") == 0){
+		return(MAGENTA);
+		
+	} else if (strcmp(COLOR, "cyan") == 0){
+		return(CYAN);
+		
+	} else if (strcmp(COLOR, "light gray") == 0){
+		return(LIGHT_GRAY);
+		
+	} else if (strcmp(COLOR, "dark gray") == 0){
+		return(DARK_GRAY);
+		
+	} else if (strcmp(COLOR, "light red") == 0){
+		return(LIGHT_RED);
+		
+	} else if (strcmp(COLOR, "light green") == 0){
+		return(LIGHT_GREEN);
+	
+	} else if (strcmp(COLOR, "light yellow") == 0){
+		return(LIGHT_YELLOW);
+		
+	} else if (strcmp(COLOR, "light blue") == 0){
+		return(LIGHT_BLUE);
+		
+	} else if (strcmp(COLOR, "light magenta") == 0){
+		return(LIGHT_MAGENTA);
+		
+	} else if (strcmp(COLOR, "light cyan") == 0){
+		return(LIGHT_CYAN);
+		
+	} else if (strcmp(COLOR, "white") == 0){
+		return(WHITE);
+
+	} else {
+		return(DEFAULT);
+	
+	}
+
+}
+
 //----------------------------------------------------------------------------//
 // external functions
 //----------------------------------------------------------------------------//
+
+//-------- initialization / termination --------------------------------------//
 
 int E_initialize(lua_State *L) {
 	char title[100];
@@ -215,7 +144,7 @@ int E_initialize(lua_State *L) {
 }
 
 int E_terminate(lua_State *L) {
-	setColor("default", "default");
+	setColor(colorCode("default"), colorCode("default"));
 	showCursor();
 	moveCursor(0, 0);
 	clearScreen();
@@ -223,6 +152,8 @@ int E_terminate(lua_State *L) {
 	return(0);
 
 }
+
+//-------- window ------------------------------------------------------------//
 
 int E_setTitle(lua_State *L) {
 	char title[100];
@@ -254,12 +185,14 @@ int E_getWinY(lua_State *L) {
 
 }
 
+//-------- cursor ------------------------------------------------------------//
+
 int E_setColor(lua_State *L) {
 	char foreground[25], background[25];
 	sprintf(foreground, "%s", luaL_checkstring(L, 1));
 	sprintf(background, "%s", luaL_checkstring(L, 2));
 
-	setColor(foreground, background);
+	setColor(colorCode(foreground), colorCode(background));
 
 	return(0);
 
@@ -275,6 +208,110 @@ int E_moveCursor(lua_State *L) {
 
 }
 
+//-------- canvas functions --------------------------------------------------//
+
+int E_initCanvas(lua_State *L) {
+	int width = luaL_checknumber(L, 1);
+	int height = luaL_checknumber(L, 2);
+
+	char colorName[25];
+	sprintf(colorName, "%s", luaL_checkstring(L, 3));
+
+	int color = colorCode(colorName);
+
+	//Variable length array
+	canvas = (int *)malloc((width * height + 2) * sizeof(int));
+	previousCanvas = (int *)malloc((width * height) * sizeof(int));
+	//The first element stores the width and the second the height
+	canvas[0] = width;
+	canvas[1] = height;
+	//Initialize with background color
+	for(int i = 0; i < height; ++i) {
+		for(int j = 0; j < width; ++j) {
+			canvas[(i * width) + j + 2] = color;
+			previousCanvas[(i * width) + j] = 0;
+
+		}
+	
+	}
+
+	return(0);
+	
+}
+
+int E_cleanCanvas(lua_State *L) {
+	char colorName[25];
+	sprintf(colorName, "%s", luaL_checkstring(L, 1));
+
+	int color = colorCode(colorName);
+
+	//Get width and height
+	int x = canvas[0];
+	int y = canvas[1];
+	//Clean with background color
+	for(int i = 0; i < y; ++i) {
+		for(int j = 0; j < x; ++j) {
+			canvas[(i * x) + j + 2] = color;
+
+		}
+
+	}
+
+	return(0);
+
+}
+
+int E_drawPixel(lua_State *L) {
+	int x = luaL_checknumber(L, 1);
+	int y = luaL_checknumber(L, 2);
+
+	char colorName[25];
+	sprintf(colorName, "%s", luaL_checkstring(L, 3));
+
+	int color = colorCode(colorName);
+
+	//Get width of canvas
+	int width = canvas[0];
+	//Draw
+	canvas[y * width + x + 2] = color;
+
+	return(0);
+
+}
+
+int E_display() {
+	//Get width and height
+	int x = canvas[0];
+	int y = canvas[1];
+	//Moves cursor to top left of the console to draw over previous frame (Using system("cls") makes the screen flicker)
+	moveCursor(0, 0);
+	//Draw
+	for(int i = 0; i < y; ++i) {
+		for (int j = 0; j < x; ++j) {
+			//if(canvas[(i * x) + j + 2] != previousCanvas[(i * x) + j]) {
+				moveCursor(j * 2, i);
+				setColor(31, canvas[(i * x) + j + 2]);
+				printf("  ");
+
+			//}
+
+			previousCanvas[(i * x) + j] = canvas[(i * x) + j + 2];
+
+		}
+
+		if(i < y - 1) {
+			printf("\n");
+
+		}
+
+	}
+
+	return(0);
+
+}
+
+//-------- utility -----------------------------------------------------------//
+
 int E_printString(lua_State *L) {
 	printf("%s", luaL_checkstring(L, 1));
 
@@ -289,49 +326,6 @@ int E_waitForKeyPress(lua_State *L) {
 
 }
 
-int E_initCanvas(lua_State *L) {
-	int width = luaL_checknumber(L, 1);
-	int height = luaL_checknumber(L, 2);
-	int color = luaL_checknumber(L, 3);
-
-	//Variable length array
-	KAL_canvas = (int *)malloc((width * height + 2) * sizeof(int));
-	KAL_previousCanvas = (int *)malloc((width * height) * sizeof(int));
-	//The first element stores the width and the second the height
-	KAL_canvas[0] = width;
-	KAL_canvas[1] = height;
-	//Initialize with background color
-	for(int i = 0; i < height; ++i) {
-		for(int j = 0; j < width; ++j) {
-			KAL_canvas[(i * width) + j + 2] = color;
-			KAL_previousCanvas[(i * width) + j] = 99;
-
-		}
-	
-	}
-
-	return(0);
-	
-}
-
-int E_cleanCanvas(lua_State *L) {
-	int color = luaL_checknumber(L, 1);
-
-	//Get width and height
-	int width = KAL_canvas[0];
-	int height = KAL_canvas[1];
-	//Clean with background color
-	for(int i = 0; i < height; ++i)
-	{
-		for(int j = 0; j < width; ++j)
-		{
-			KAL_canvas[(i * width) + j + 2] = color;
-		}
-	}
-
-	return(0);
-}
-
 //----------------------------------------------------------------------------//
 // registering library
 //----------------------------------------------------------------------------//
@@ -344,6 +338,10 @@ const struct luaL_Reg kaliumn[] = {
 	{"getWinY", E_getWinY},
 	{"setColor", E_setColor},
 	{"moveCursor", E_moveCursor},
+	{"initCanvas", E_initCanvas},
+	{"cleanCanvas", E_cleanCanvas},
+	{"drawPixel", E_drawPixel},
+	{"display", E_display},
 	{"printString", E_printString},
 	{"waitForKeyPress", E_waitForKeyPress},
 	{NULL, NULL}

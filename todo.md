@@ -11,10 +11,10 @@
 - [x] Terminate
 - [ ] Textures
     + [ ] Load / destroy
-- [ ] Canvas
-    + [ ] Clean
-    + [ ] Draw pixel
+- [x] Canvas
+    + [x] Clean
+    + [x] Draw pixel
     + [ ] Draw texture
     + [ ] Draw text
-- [ ] Display 
+- [x] Display 
 - [ ] FPS
