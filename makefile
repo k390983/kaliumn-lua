@@ -3,8 +3,8 @@ CC = gcc
 RM = rm
 
 CFLAGS = -Wall
-LFLAGS = -llua5.2
-IFLAGS = -I/usr/include/lua5.2/
+LFLAGS = -llua5.3
+IFLAGS = -I/usr/include/lua5.3/
 
 TARGET = kaliumn.c
 OUTPUT = app
