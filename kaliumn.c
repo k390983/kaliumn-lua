@@ -131,10 +131,7 @@ int colorCode(const char COLOR[]) {
 //-------- initialization / termination --------------------------------------//
 
 int E_initialize(lua_State *L) {
-	char title[100];
-	sprintf(title, "%s", luaL_checkstring(L, 1));
-
-	setTitle(title);
+	setTitle(luaL_checkstring(L, 1));
 	hideCursor();
 	moveCursor(0, 0);
 	clearScreen();
@@ -156,10 +153,7 @@ int E_terminate(lua_State *L) {
 //-------- window ------------------------------------------------------------//
 
 int E_setTitle(lua_State *L) {
-	char title[100];
-	sprintf(title, "%s", luaL_checkstring(L, 1));
-
-	setTitle(title);
+	setTitle(luaL_checkstring(L, 1));
 
 	return(0);
 
@@ -169,7 +163,7 @@ int E_getWinX(lua_State *L) {
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 
-	lua_pushnumber(L, size.ws_col);
+	lua_pushnumber(L, size.ws_col / 2);
 
 	return(1);
 
@@ -188,11 +182,11 @@ int E_getWinY(lua_State *L) {
 //-------- cursor ------------------------------------------------------------//
 
 int E_setColor(lua_State *L) {
-	char foreground[25], background[25];
-	sprintf(foreground, "%s", luaL_checkstring(L, 1));
-	sprintf(background, "%s", luaL_checkstring(L, 2));
+	setColor(
+		colorCode(luaL_checkstring(L, 1)),
+		colorCode(luaL_checkstring(L, 2))
 
-	setColor(colorCode(foreground), colorCode(background));
+	);
 
 	return(0);
 
@@ -213,11 +207,7 @@ int E_moveCursor(lua_State *L) {
 int E_initCanvas(lua_State *L) {
 	int width = luaL_checknumber(L, 1);
 	int height = luaL_checknumber(L, 2);
-
-	char colorName[25];
-	sprintf(colorName, "%s", luaL_checkstring(L, 3));
-
-	int color = colorCode(colorName);
+	int color = colorCode(luaL_checkstring(L, 3));
 
 	//Variable length array
 	canvas = (int *)malloc((width * height + 2) * sizeof(int));
@@ -225,7 +215,7 @@ int E_initCanvas(lua_State *L) {
 	//The first element stores the width and the second the height
 	canvas[0] = width;
 	canvas[1] = height;
-	//Initialize with background color
+
 	for(int i = 0; i < height; ++i) {
 		for(int j = 0; j < width; ++j) {
 			canvas[(i * width) + j + 2] = color;
@@ -240,15 +230,10 @@ int E_initCanvas(lua_State *L) {
 }
 
 int E_cleanCanvas(lua_State *L) {
-	char colorName[25];
-	sprintf(colorName, "%s", luaL_checkstring(L, 1));
-
-	int color = colorCode(colorName);
-
-	//Get width and height
+	int color = colorCode(luaL_checkstring(L, 3));
 	int x = canvas[0];
 	int y = canvas[1];
-	//Clean with background color
+
 	for(int i = 0; i < y; ++i) {
 		for(int j = 0; j < x; ++j) {
 			canvas[(i * x) + j + 2] = color;
@@ -262,25 +247,24 @@ int E_cleanCanvas(lua_State *L) {
 }
 
 int E_display() {
-	//Get width and height
-	int x = canvas[0];
-	int y = canvas[1];
+	int width = canvas[0];
+	int height = canvas[1];
 	moveCursor(0, 0);
-	//Draw
-	for(int i = 0; i < y; ++i) {
-		for (int j = 0; j < x; ++j) {
-			//if(canvas[(i * x) + j + 2] != previousCanvas[(i * x) + j]) {
+
+	for(int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			if(canvas[(i * width) + j + 2] != previousCanvas[(i * width) + j]) {
 				moveCursor(j * 2, i);
-				setColor(DEFAULT, canvas[(i * x) + j + 2]);
+				setColor(DEFAULT, canvas[(i * width) + j + 2]);
 				printf("  ");
 
-			//}
+			}
 
-			previousCanvas[(i * x) + j] = canvas[(i * x) + j + 2];
+			previousCanvas[(i * width) + j] = canvas[(i * width) + j + 2];
 
 		}
 
-		if(i < y - 1) {
+		if(i < height - 1) {
 			printf("\n");
 
 		}
@@ -310,14 +294,9 @@ int E_drawPixel(lua_State *L) {
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
 
-	char colorName[25];
-	sprintf(colorName, "%s", luaL_checkstring(L, 3));
-
-	int color = colorCode(colorName);
-
-	//Get width of canvas
+	int color = colorCode(luaL_checkstring(L, 3));
 	int width = canvas[0];
-	//Draw
+
 	canvas[y * width + x + 2] = color;
 
 	return(0);

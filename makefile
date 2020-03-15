@@ -1,10 +1,12 @@
+
 CC = gcc
+LUA = lua5.3
 
 RM = rm
 
 CFLAGS = -Wall -shared -o
-LFLAGS = -llua5.3
-IFLAGS = -I/usr/include/lua5.3/
+LFLAGS = -l$(LUA)
+IFLAGS = -I/usr/include/$(LUA)/
 
 TARGET = kaliumn
 
@@ -28,7 +30,7 @@ run:
 	@echo "-------- RUN --------"
 	@echo ""
 
-	lua test.lua
+	$(LUA) test.lua
 
 	@echo ""
 	@echo "-------- END --------"

@@ -2,16 +2,28 @@ k = require "kaliumn"
 
 k.initialize("testapp")
 
-k.moveCursor(10, 10)
+width, height = 25, 25
 
-k.setColor("red", "blue")
-k.printString("width: "..k.getWinX()..", height: "..k.getWinY().."\n\n")
+k.initCanvas(width + 1, height + 1, "white")
 
-k.waitForKeyPress()
+for i = 0, height do
+	for j = 0, width do
+		if i == 0 or i == height or j == 0 or j == width then
+			k.drawPixel(j, i, "red")
 
-k.initCanvas(25, 25, "white")
+		else
+			k.drawPixel(j, i, "blue")
 
-k.drawPixel(5, 5, "blue")
+		end
+
+	end
+
+end
+
+k.drawPixel(0, 0, "yellow")
+k.drawPixel(width, 0, "yellow")
+k.drawPixel(0, height, "yellow")
+k.drawPixel(width, height, "yellow")
 
 k.display()
 
