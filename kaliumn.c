@@ -261,36 +261,17 @@ int E_cleanCanvas(lua_State *L) {
 
 }
 
-int E_drawPixel(lua_State *L) {
-	int x = luaL_checknumber(L, 1);
-	int y = luaL_checknumber(L, 2);
-
-	char colorName[25];
-	sprintf(colorName, "%s", luaL_checkstring(L, 3));
-
-	int color = colorCode(colorName);
-
-	//Get width of canvas
-	int width = canvas[0];
-	//Draw
-	canvas[y * width + x + 2] = color;
-
-	return(0);
-
-}
-
 int E_display() {
 	//Get width and height
 	int x = canvas[0];
 	int y = canvas[1];
-	//Moves cursor to top left of the console to draw over previous frame (Using system("cls") makes the screen flicker)
 	moveCursor(0, 0);
 	//Draw
 	for(int i = 0; i < y; ++i) {
 		for (int j = 0; j < x; ++j) {
 			//if(canvas[(i * x) + j + 2] != previousCanvas[(i * x) + j]) {
 				moveCursor(j * 2, i);
-				setColor(31, canvas[(i * x) + j + 2]);
+				setColor(DEFAULT, canvas[(i * x) + j + 2]);
 				printf("  ");
 
 			//}
@@ -309,6 +290,44 @@ int E_display() {
 	return(0);
 
 }
+
+//-------- textures ----------------------------------------------------------//
+
+int E_drawTexture(lua_State *L) {
+	int x = luaL_checknumber(L, 1);
+	int y = luaL_checknumber(L, 2);
+
+	char texture[25];
+	sprintf(texture, "%s", luaL_checkstring(L, 3));
+
+	
+
+
+	return(0);
+
+}
+
+//-------- drawing -----------------------------------------------------------//
+
+int E_drawPixel(lua_State *L) {
+	int x = luaL_checknumber(L, 1);
+	int y = luaL_checknumber(L, 2);
+
+	char colorName[25];
+	sprintf(colorName, "%s", luaL_checkstring(L, 3));
+
+	int color = colorCode(colorName);
+
+	//Get width of canvas
+	int width = canvas[0];
+	//Draw
+	canvas[y * width + x + 2] = color;
+
+	return(0);
+
+}
+
+
 
 //-------- utility -----------------------------------------------------------//
 
