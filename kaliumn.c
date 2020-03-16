@@ -12,12 +12,12 @@
 #include <stdlib.h>
 #include <termios.h>
 #include <string.h>
+#include <math.h>
 
 //----------------------------------------------------------------------------//
 // colors
 //----------------------------------------------------------------------------//
 
-#define DEFAULT 39
 #define BLACK 30
 #define RED 31
 #define GREEN 32
@@ -34,6 +34,8 @@
 #define LIGHT_MAGENTA 95
 #define LIGHT_CYAN 96
 #define WHITE 97
+
+#define DEFAULT 39
 
 //----------------------------------------------------------------------------//
 // global variables
@@ -59,7 +61,7 @@ void setColor(const int FOREGROUND, const int BACKGROUND) {
 }
 
 void moveCursor(const int X, const int Y) {
-	printf("\033[%d;%dH",Y, X);
+	printf("\033[%d;%dH",Y + 1, X + 1);
 
 }
 
@@ -163,7 +165,7 @@ int E_getWinX(lua_State *L) {
 	struct winsize size;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 
-	lua_pushnumber(L, size.ws_col / 2);
+	lua_pushnumber(L, floor(size.ws_col / 2));
 
 	return(1);
 
@@ -218,8 +220,8 @@ int E_initCanvas(lua_State *L) {
 
 	for(int i = 0; i < height; ++i) {
 		for(int j = 0; j < width; ++j) {
-			canvas[(i * width) + j + 2] = color;
-			previousCanvas[(i * width) + j] = 0;
+			canvas[i * width + j + 2] = color;
+			previousCanvas[i * width + j] = 0;
 
 		}
 	
@@ -259,13 +261,6 @@ int E_display() {
 				printf("  ");
 
 			}
-
-			previousCanvas[(i * width) + j] = canvas[(i * width) + j + 2];
-
-		}
-
-		if(i < height - 1) {
-			printf("\n");
 
 		}
 
