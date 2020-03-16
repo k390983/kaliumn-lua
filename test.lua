@@ -1,8 +1,12 @@
 kal = require "kaliumn"
 
 --============================================================================--
--- Window
+-- 1. Window Dimensions / Canvas Size
 --============================================================================--
+
+os.execute("clear")
+print("\n ==== Test 1 - Window Dimensions / Canvas Size ====")
+kal.waitForKeyPress()
 
 kal.initialize("Window")
 
@@ -33,8 +37,12 @@ kal.waitForKeyPress()
 kal.terminate()
 
 --============================================================================--
--- Display all colors
+-- 2. Display All Colors
 --============================================================================--
+
+os.execute("clear")
+print("\n ==== Test 2 - Display All Colors ====")
+kal.waitForKeyPress()
 
 kal.initialize("Display all colors")
 
