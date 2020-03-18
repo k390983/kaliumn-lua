@@ -9,28 +9,29 @@ LFLAGS = -l$(LUA)
 IFLAGS = -I/usr/include/$(LUA)/
 
 TARGET = kaliumn
+INCLUDES = src/interface.c src/canvas.c src/etc.c
 
 default:
 	@echo ""
 	@echo "-------- COMPILE --------"
 	@echo ""
-	$(CC) $(TARGET).c $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
+	$(CC) src/$(TARGET).c $(INCLUDES) $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
 	@echo ""
 	@echo "-------- END --------"
 	@echo ""
 
-run:
+test:
 	@echo ""
 	@echo "-------- COMPILE --------"
 	@echo ""
 
-	$(CC) $(TARGET).c $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
+	$(CC) src/$(TARGET).c $(INCLUDES) $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
 	
 	@echo ""
 	@echo "-------- RUN --------"
 	@echo ""
 
-	$(LUA) test.lua
+	$(LUA) tests/test.lua
 
 	@echo ""
 	@echo "-------- END --------"
