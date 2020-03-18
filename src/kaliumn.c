@@ -16,10 +16,10 @@
 #include <sys/time.h>
 
 
-#include "interface.h"
-#include "draw.h"
-#include "canvas.h"
-#include "etc.h"
+#include "includes/interface.h"
+#include "includes/draw.h"
+#include "includes/canvas.h"
+#include "includes/etc.h"
 
 //----------------------------------------------------------------------------//
 // global variables

@@ -9,7 +9,7 @@ LFLAGS = -l$(LUA)
 IFLAGS = -I/usr/include/$(LUA)/
 
 TARGET = kaliumn
-INCLUDES = src/interface.c src/canvas.c src/etc.c
+INCLUDES = src/includes/interface.c src/includes/canvas.c src/includes/etc.c
 
 default:
 	@echo ""
