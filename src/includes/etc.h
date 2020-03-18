@@ -2,16 +2,14 @@
 // misc functions
 //----------------------------------------------------------------------------//
 
-void hideCursor();
 
-void showCursor();
+#ifndef ETC
+#define ETC
 
-void clearScreen();
+int hideCursor();
+int showCursor();
+int clearScreen();
+int moveCursor(const int X, const int Y);
+int setTitle(const char TITLE[]);
 
-void setColor(const int FOREGROUND, const int BACKGROUND);
-
-void moveCursor(const int X, const int Y);
-
-void setTitle(const char TITLE[]);
-
-int colorCode(const char COLOR[]);
+#endif

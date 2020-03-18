@@ -6,11 +6,10 @@
 #include "lualib.h"
 #include "lauxlib.h"
 
+#include <stdlib.h>
+#include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <string.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -30,7 +29,7 @@ int *previousCanvas;
 //-------- initialization / termination --------------------------------------//
 
 int E_initialize(lua_State *L) {
-	setTitle(luaL_checkstring(L, 1));
+	if(setTitle(luaL_checkstring(L, 1)) == -1) luaL_error(L, "invalid title");
 	hideCursor();
 	moveCursor(0, 0);
 	clearScreen();

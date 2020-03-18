@@ -2,8 +2,11 @@
 // drawing functions
 //----------------------------------------------------------------------------//
 
-void initCanvas(int width, int height, int color);
+#ifndef CANVAS
+#define CANVAS
 
-void cleanCanvas(int color);
+int initCanvas(const int WIDTH, const int HEIGHT, const int COLOR);
+int cleanCanvas(const int COLOR);
+int display();
 
-void display();
+#endif

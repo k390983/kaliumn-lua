@@ -2,6 +2,10 @@
 // c/lua interface
 //----------------------------------------------------------------------------//
 
+
+#ifndef INTERFACE
+#define INTERFACE
+
 //-------- initialization / termination --------------------------------------//
 
 int E_initialize(lua_State *L);
@@ -41,3 +45,5 @@ int E_setColor(lua_State *L);
 int E_moveCursor(lua_State *L);
 
 int E_getTime(lua_State *L); // returns time in miliseconds
+
+#endif

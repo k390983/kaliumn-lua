@@ -6,15 +6,12 @@
 #include "lualib.h"
 #include "lauxlib.h"
 
+#include <stdlib.h>
+#include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <string.h>
 #include <math.h>
-#include <time.h>
 #include <sys/time.h>
-
 
 #include "includes/interface.h"
 #include "includes/draw.h"
@@ -38,15 +35,15 @@ const struct luaL_Reg kaliumn[] = {
 	{"setTitle", E_setTitle},
 	{"getWinX", E_getWinX},
 	{"getWinY", E_getWinY},
-	{"setColor", E_setColor},
-	{"moveCursor", E_moveCursor},
 	{"initCanvas", E_initCanvas},
 	{"cleanCanvas", E_cleanCanvas},
+	{"display", E_display},
 	{"drawPixel", E_drawPixel},
 	{"drawTexture", E_drawTexture},
-	{"display", E_display},
 	{"printString", E_printString},
 	{"waitForKeyPress", E_waitForKeyPress},
+	{"setColor", E_setColor},
+	{"moveCursor", E_moveCursor},
 	{"getTime", E_getTime},
 	{NULL, NULL}
 
