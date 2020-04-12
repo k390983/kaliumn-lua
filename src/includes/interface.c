@@ -115,6 +115,8 @@ int E_drawPixel(lua_State *L) {
 	
 	drawPixel(x, y, color);
 
+	//printf("draw");
+
 	return(0);
 
 }

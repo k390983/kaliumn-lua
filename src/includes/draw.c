@@ -155,6 +155,9 @@ int drawTexture(const int X, const int Y, const char PATH[]) {
 
 	if(fp == NULL) return(-1);
 
+	printf("open");
+	getchar();
+
 	fscanf(fp, "%d, %d", &tWidth, &tHeight);
 
 	for(int i = 0; i < tHeight; ++i) {
@@ -179,13 +182,12 @@ int drawTexture(const int X, const int Y, const char PATH[]) {
 }
 
 int drawPixel(const int X, const int Y, const int COLOR) {
-	if(checkColor(COLOR == -1)) return(-1);
+	if(!checkColor(COLOR)) return(-1);
 	if(X < 0 || X > canvas[0] - 1) return(-1);
 	if(Y < 0 || Y > canvas[1] - 1) return(-1);
 
 	canvas[Y * canvas[0] + X + 2] = COLOR;
-
+	//printf("draw");
 	return(1);
 
 }
-
