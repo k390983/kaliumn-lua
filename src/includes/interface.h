@@ -2,7 +2,6 @@
 // c/lua interface
 //----------------------------------------------------------------------------//
 
-
 #ifndef INTERFACE
 #define INTERFACE
 
@@ -26,7 +25,7 @@ int E_initCanvas(lua_State *L);
 
 int E_cleanCanvas(lua_State *L);
 
-int E_display();
+int E_display(lua_State *L);
 
 //-------- drawing -----------------------------------------------------------//
 

@@ -87,7 +87,7 @@ int E_initCanvas(lua_State *L) {
 	initCanvas(width, height, color);
 
 	return(0);
-	
+
 }
 
 int E_cleanCanvas(lua_State *L) {
@@ -99,7 +99,7 @@ int E_cleanCanvas(lua_State *L) {
 
 }
 
-int E_display() {
+int E_display(lua_State *L) {
 	display();
 
 	return(0);
@@ -112,7 +112,7 @@ int E_drawPixel(lua_State *L) {
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
 	int color = colorCode(luaL_checkstring(L, 3));
-	
+
 	drawPixel(x, y, color);
 
 	//printf("draw");
@@ -127,6 +127,9 @@ int E_drawTexture(lua_State *L) {
 
 	char path[25];
 	sprintf(path, "%s", luaL_checkstring(L, 3));
+
+	printf("%s", path);
+	getchar();
 
 	drawTexture(x, y, path);
 

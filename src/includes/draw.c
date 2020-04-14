@@ -151,14 +151,16 @@ int setColor(const int FOREGROUND, const int BACKGROUND) {
 
 int drawTexture(const int X, const int Y, const char PATH[]) {
 	int tWidth, tHeight;
-	FILE *fp = fopen(PATH, "r");
+	FILE *fp = fopen("texture.kal", "r");
 
-	if(fp == NULL) return(-1);
-
-	printf("open");
+	printf("%s", PATH);
 	getchar();
 
+	//if(fp == NULL) return(-1);
+
 	fscanf(fp, "%d, %d", &tWidth, &tHeight);
+
+	printf("%d, %d", tWidth, tHeight);
 
 	for(int i = 0; i < tHeight; ++i) {
 		for(int j = 0; j < tWidth; ++j) {

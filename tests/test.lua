@@ -101,7 +101,7 @@ width, height = kal.getWinX(), kal.getWinY()
 
 kal.initCanvas(width, height, "default")
 
-kal.drawTexture(5, 5, "assets/texture.kal")
+kal.drawTexture(5, 5, "texture.kal")
 
 kal.display()
 
