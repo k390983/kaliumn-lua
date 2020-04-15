@@ -110,6 +110,13 @@ int comparePixels(const Pixel pixel1, const Pixel pixel2)
 	return(0);
 }
 
+void assignColor(Pixel pixel, const int R, const int G, const int B)
+{
+	pixel.r = R;
+	pixel.g = G;
+	pixel.b = B;
+}
+
 //----------------------------------------------------------------------------//
 // Canvas
 //----------------------------------------------------------------------------//
@@ -136,8 +143,8 @@ int initCanvas(
 	{
 		for(int j = 0; j < WIDTH; ++j)
 		{
-			canvas.pixels[i * WIDTH + j] = {R, G, B};
-			canvas.previousPixels[i * WIDTH + j] = {0, 0, 0};
+			assignColor(canvas.pixels[i * WIDTH + j], R, G, B);
+			assignColor(canvas.previousPixels[i * WIDTH + j], -1, -1, -1);
 		}
 	}
 
@@ -150,7 +157,7 @@ int cleanCanvas(const int R, const int G, const int B)
 	{
 		for(int j = 0; j < canvas.width; ++j)
 		{
-			canvas.pixels[i * canvas.width + j] = {R, G, B};
+			assignColor(canvas.pixels[i * canvas.width + j], R, G, B);
 		}
 	}
 
@@ -170,14 +177,19 @@ int display()
 			Pixel pixel2 = canvas.pixels[(i * canvas.width) + j];
 			Pixel previousPixel2 = canvas.pixels[(i * canvas.width) + j];
 
-			if(comparePixels(pixel1, previousPixel1) || comparePixels(pixel2, previousPixel2))
+			/*if(comparePixels(pixel1, previousPixel1) || comparePixels(pixel2, previousPixel2))
 			{
 				moveCursor(j, i / 2);
 				setBackColor(pixel1.r, pixel1.g, pixel1.b);
 				setFrontColor(pixel2.r, pixel2.g, pixel2.b);
 				printf("▄");
-			}
+			}*/
+
+			setBackColor(pixel1.r, pixel1.g, pixel1.b);
+			setFrontColor(pixel2.r, pixel2.g, pixel2.b);
+			printf("▄");
 		}
+		printf("\n");
 	}
 
 	return(0);
@@ -192,7 +204,7 @@ int drawPixel(const int X, const int Y, const int R, const int G, const int B)
 	if(X < 0 || X > canvas.width) return(1);
 	if(Y < 0 || Y > canvas.height) return(1);
 
-	canvas.pixels[Y * canvas.width + X] = {R, G, B};
+	assignColor(canvas.pixels[Y * canvas.width + X], R, G, B);
 
 	return(1);
 }
@@ -271,18 +283,22 @@ int E_getWinY(lua_State *L) {
 int E_initCanvas(lua_State *L) {
 	int width = luaL_checknumber(L, 1);
 	int height = luaL_checknumber(L, 2);
-	int color = colorCode(luaL_checkstring(L, 3));
+	int r = luaL_checknumber(L, 3);
+	int g = luaL_checknumber(L, 4);
+	int b = luaL_checknumber(L, 5);
 
-	initCanvas(width, height, color);
+	initCanvas(width, height, r, g, b);
 
 	return(0);
 
 }
 
 int E_cleanCanvas(lua_State *L) {
-	int color = colorCode(luaL_checkstring(L, 1));
+	int r = luaL_checknumber(L, 1);
+	int g = luaL_checknumber(L, 2);
+	int b = luaL_checknumber(L, 3);
 
-	cleanCanvas(color);
+	cleanCanvas(r, g, b);
 
 	return(0);
 
@@ -300,17 +316,17 @@ int E_display(lua_State *L) {
 int E_drawPixel(lua_State *L) {
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
-	int color = colorCode(luaL_checkstring(L, 3));
+	int r = luaL_checknumber(L, 3);
+	int g = luaL_checknumber(L, 4);
+	int b = luaL_checknumber(L, 5);
 
-	drawPixel(x, y, color);
-
-	//printf("draw");
+	drawPixel(x, y, r, g, b);
 
 	return(0);
 
 }
 
-int E_drawTexture(lua_State *L) {
+/*int E_drawTexture(lua_State *L) {
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
 
@@ -324,7 +340,7 @@ int E_drawTexture(lua_State *L) {
 
 	return(0);
 
-}
+}*/
 
 //-------- utility -----------------------------------------------------------//
 
@@ -342,7 +358,7 @@ int E_waitForKeyPress(lua_State *L) {
 
 }
 
-int E_setColor(lua_State *L) {
+/*int E_setColor(lua_State *L) {
 	setColor(
 		colorCode(luaL_checkstring(L, 1)),
 		colorCode(luaL_checkstring(L, 2))
@@ -351,7 +367,7 @@ int E_setColor(lua_State *L) {
 
 	return(0);
 
-}
+}*/
 
 int E_moveCursor(lua_State *L) {
 	int x = luaL_checknumber(L, 1);
@@ -391,10 +407,10 @@ const struct luaL_Reg kaliumn[] = {
 	{"cleanCanvas", E_cleanCanvas},
 	{"display", E_display},
 	{"drawPixel", E_drawPixel},
-	{"drawTexture", E_drawTexture},
+	//{"drawTexture", E_drawTexture},
 	{"printString", E_printString},
 	{"waitForKeyPress", E_waitForKeyPress},
-	{"setColor", E_setColor},
+	//{"setColor", E_setColor},
 	{"moveCursor", E_moveCursor},
 	{"getTime", E_getTime},
 	{NULL, NULL}
