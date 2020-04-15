@@ -1,56 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned char* readBMP(char* filename)
+#include "libbmp.h"
+
+void displayImage(char input[])
 {
-    int i;
-    FILE* f = fopen(filename, "rb");
-    unsigned char info[54];
+	bmp_img img;
+	bmp_img_init_df(&img, 0, 0);
 
-    // read the 54-byte header
-    fread(info, sizeof(unsigned char), 54, f);
+	bmp_img_read(&img, input);
 
-    // extract image height and width from header
-    int width = *(int*)&info[18];
-    int height = *(int*)&info[22];
+	int width = img.img_header.biWidth;
+	int height = img.img_header.biHeight;
 
-    // allocate 3 bytes per pixel
-    int size = 3 * width * height;
-    unsigned char* data = new unsigned char[size];
-
-    // read the rest of the data at once
-    fread(data, sizeof(unsigned char), size, f);
-    fclose(f);
-
-    for(i = 0; i < size; i += 3)
-    {
-            // flip the order of every 3 bytes
-            unsigned char tmp = data[i];
-            data[i] = data[i+2];
-            data[i+2] = tmp;
-    }
-
-    return data;
-}
-
-int main(void)
-{
-	unsigned char *data;
-	int width = 8;
-	//int height = 8;
-
-	data = readBMP("test.bmp");
-
-	for(int i = 0; i < 8; ++i)
+	for(int i = 0; i < height; i += 2)
 	{
-		for(int j = 0; j < 8; ++j)
+		for(int j = 0; j < width; j++)
 		{
-			printf("(%c, %c, %c)", data[3 * (i * width + j)], data[3 * (i * width + j) + 1], data[3 * (i * width + j) + 2]);
+			bmp_pixel pixel1 = img.img_pixels[j][i];
+			bmp_pixel pixel2 = img.img_pixels[j][i + 1];
+			//background => upper part
+			printf("\x1b[48;2;%d;%d;%dm", pixel1.red, pixel1.green, pixel1.blue);
+			// foreground => lower part
+			printf("\x1b[38;2;%d;%d;%dm", pixel2.red, pixel2.green, pixel2.blue);
+			
+			printf("▄");
+
+			printf("\x1b[0m");
 
 		}
 
 		printf("\n");
 
 	}
+
+}
+
+int main(int argc, char *argv[])
+{
+	char input[100];
+	sprintf(input, "%s", argv[1]);
+	displayImage(input);
+	return(0);
 
 }
