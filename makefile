@@ -10,7 +10,7 @@ LFLAGS = -l$(LUA)
 IFLAGS = -I/usr/include/$(LUA)/
 
 TARGET = kaliumn
-INCLUDES = src/includes/canvas.c src/includes/draw.c src/includes/etc.c src/includes/interface.c
+INCLUDES = src/includes/libbmp.c
 
 default:
 	@echo ""
@@ -33,7 +33,7 @@ test:
 	$(CC) src/$(TARGET).c $(INCLUDES) $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
 
 	$(CP) $(TARGET).so tests
-	
+
 	@echo ""
 	@echo "-------- RUN --------"
 	@echo ""
