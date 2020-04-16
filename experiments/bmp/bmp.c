@@ -19,11 +19,10 @@ void displayImage(char input[])
 		{
 			bmp_pixel pixel1 = img.img_pixels[j][i];
 			bmp_pixel pixel2 = img.img_pixels[j][i + 1];
-			//background => upper part
+
 			printf("\x1b[48;2;%d;%d;%dm", pixel1.red, pixel1.green, pixel1.blue);
-			// foreground => lower part
 			printf("\x1b[38;2;%d;%d;%dm", pixel2.red, pixel2.green, pixel2.blue);
-			
+
 			printf("▄");
 
 			printf("\x1b[0m");

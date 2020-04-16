@@ -4,30 +4,17 @@ kal = require "kaliumn"
 -- 1. Window Dimensions / Canvas Size
 --============================================================================--
 
-kal.initialize("Test")
+kal.init("Test")
 
-width, height = kal.getWinX(), kal.getWinY()
+width, height = kal.getWinWidth(), kal.getWinHeight()
 
 kal.initCanvas(width, height, 0, 0, 255)
 
---[[for i = 0, height - 1 do
-	for j = 0, width - 1 do
-		if j == math.floor(width / 2) or  i == math.floor(height / 2) then
-			kal.drawPixel(j, i, "green")
+kal.drawTexture(20, 20, "assets/test.png")
+kal.drawPixel(10, 10, 255, 0, 0, 100)
 
-		end
-
-		if i == 0 or i == height - 1 or j == 0 or j == width - 1 then
-			kal.drawPixel(j, i, "red")
-
-		end
-
-	end
-
-end]]
-
-kal.display()
+kal.displayCanvas()
 
 kal.waitForKeyPress()
 
-kal.terminate()
+kal.term()

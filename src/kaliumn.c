@@ -46,6 +46,7 @@ SOFTWARE.
 #include <string.h>
 #include <unistd.h>
 #include <math.h>
+#include <unistd.h>
 
 //-------- POSIX libraries ---------------------------------------------------//
 
@@ -125,11 +126,24 @@ static int comparePixels(const Pixel pixel1, const Pixel pixel2)
 	return(0);
 }
 
-static void assignColor(Pixel *pixel, const int R, const int G, const int B)
+static void assignColor
+(
+	Pixel *pixel,
+	const int R,
+	const int G,
+	const int B,
+	const int A
+)
 {
-	pixel->r = R;
-	pixel->g = G;
-	pixel->b = B;
+	float t = (float)A / (float)255;
+
+	pixel->r = (int)(pixel->r * (1 - t) + R * t);
+	pixel->g = (int)(pixel->g * (1 - t) + G * t);
+	pixel->b = (int)(pixel->b * (1 - t) + B * t);
+
+	//pixel->r = R;
+	//pixel->g = G;
+	//pixel->b = B;
 }
 
 
@@ -159,8 +173,8 @@ int initCanvas(
 	{
 		for(int j = 0; j < WIDTH; ++j)
 		{
-			assignColor(&kal_canvas.pixels[i * WIDTH + j], R, G, B);
-			assignColor(&kal_canvas.previousPixels[i * WIDTH + j], -1, -1, -1);
+			assignColor(&kal_canvas.pixels[i * WIDTH + j], R, G, B, 255);
+			assignColor(&kal_canvas.previousPixels[i * WIDTH + j], -1, -1, -1, 255);
 		}
 	}
 
@@ -173,14 +187,14 @@ int cleanCanvas(const int R, const int G, const int B)
 	{
 		for(int j = 0; j < kal_canvas.width; ++j)
 		{
-			assignColor(&kal_canvas.pixels[i * kal_canvas.width + j], R, G, B);
+			assignColor(&kal_canvas.pixels[i * kal_canvas.width + j], R, G, B, 255);
 		}
 	}
 
 	return(0);
 }
 
-int display()
+int displayCanvas()
 {
 	moveCursor(0, 0);
 
@@ -190,8 +204,8 @@ int display()
 		{
 			Pixel pixel1 = kal_canvas.pixels[(i * kal_canvas.width) + j];
 			Pixel previousPixel1 = kal_canvas.previousPixels[(i * kal_canvas.width) + j];
-			Pixel pixel2 = kal_canvas.pixels[(i * kal_canvas.width) + j];
-			Pixel previousPixel2 = kal_canvas.previousPixels[(i * kal_canvas.width) + j];
+			Pixel pixel2 = kal_canvas.pixels[((i + 1) * kal_canvas.width) + j];
+			Pixel previousPixel2 = kal_canvas.previousPixels[((i + 1) * kal_canvas.width) + j];
 
 			if(comparePixels(pixel1, previousPixel1) || comparePixels(pixel2, previousPixel2))
 			{
@@ -211,12 +225,45 @@ int display()
 // Drawing
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-int drawPixel(const int X, const int Y, const int R, const int G, const int B)
+int drawPixel
+(
+		const int X,
+		const int Y,
+		const int R,
+		const int G,
+		const int B,
+		const int A
+)
 {
-	if(X < 0 || X > kal_canvas.width) return(1);
-	if(Y < 0 || Y > kal_canvas.height) return(1);
+	if(X > 0 && X < kal_canvas.width && Y > 0 && Y < kal_canvas.height)
+	{
+		assignColor(&kal_canvas.pixels[Y * kal_canvas.width + X], R, G, B, A);
+	}
+	else
+		return(1);
 
-	assignColor(&kal_canvas.pixels[Y * kal_canvas.width + X], R, G, B);
+	return(0);
+}
+
+int drawTexture(const int X, const int Y, const char PATH[100])
+{
+	unsigned char* image = 0;
+	unsigned width, height;
+
+	lodepng_decode32_file(&image, &width, &height, PATH);
+
+	for(int i = 0; i < height; i++)
+	{
+		for(int j = 0; j < width; j++)
+		{
+			int r = image[i * width * 4 + j * 4];
+			int g = image[i * width * 4 + j * 4 + 1];
+			int b = image[i * width * 4 + j * 4 + 2];
+			int a = image[i * width * 4 + j * 4 + 3];
+
+			drawPixel(X + j, Y + i, r, g, b, a);
+		}
+	}
 
 	return(0);
 }
@@ -268,7 +315,7 @@ int E_cleanCanvas(lua_State *L)
 
 int E_displayCanvas(lua_State *L)
 {
-	display();
+	displayCanvas();
 
 	return(0);
 }
@@ -293,26 +340,24 @@ int E_drawPixel(lua_State *L)
 	int r = luaL_checknumber(L, 3);
 	int g = luaL_checknumber(L, 4);
 	int b = luaL_checknumber(L, 5);
-	drawPixel(x, y, r, g, b);
+	int a = luaL_checknumber(L, 6);
+	drawPixel(x, y, r, g, b, a);
 
 	return(0);
 }
 
-/*int E_drawTexture(lua_State *L) {
+int E_drawTexture(lua_State *L)
+{
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
 
 	char path[25];
 	sprintf(path, "%s", luaL_checkstring(L, 3));
 
-	printf("%s", path);
-	getchar();
-
 	drawTexture(x, y, path);
 
 	return(0);
-
-}*/
+}
 
 //-------- input -------------------------------------------------------------//
 
@@ -400,6 +445,7 @@ const struct luaL_Reg kaliumn[] =
 	{"cleanCanvas", E_cleanCanvas},
 	{"displayCanvas", E_displayCanvas},
 	{"drawPixel", E_drawPixel},
+	{"drawTexture", E_drawTexture},
 	{"waitForKeyPress", E_waitForKeyPress},
 	{"getTime", E_getTime},
 	{"init", E_init},
