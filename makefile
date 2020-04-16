@@ -10,7 +10,7 @@ LFLAGS = -l$(LUA)
 IFLAGS = -I/usr/include/$(LUA)/
 
 TARGET = kaliumn
-INCLUDES = src/includes/libbmp.c
+INCLUDES = src/includes/libbmp.c src/includes/lodepng.c 
 
 default:
 	@echo ""

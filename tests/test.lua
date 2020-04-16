@@ -31,4 +31,3 @@ kal.display()
 kal.waitForKeyPress()
 
 kal.terminate()
-
