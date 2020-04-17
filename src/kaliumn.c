@@ -67,29 +67,27 @@ SOFTWARE.
 typedef struct Color
 {
 	int r;
-    int g;
-    int b;
+	int g;
+	int b;
 	int a;
-
 }Color;
-
-typedef struct Pixel
-{
-	int r;
-    int g;
-    int b;
-	int a;
-
-}Pixel;
 
 typedef struct Canvas
 {
 	int width;
 	int height;
-	Pixel *pixels;
-	Pixel *previousPixels;
-
+	int drawMode;
+	Color currentColor;
+	Color *pixels;
+	Color *previousPixels;
 }Canvas;
+
+typedef struct Texture
+{
+	int width;
+	int height;
+	Color *pixels;
+} Texture;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Global variables
@@ -118,7 +116,7 @@ Color kal_color;
 
 #define setTitle(TITLE) printf("\033]0;%s\a", TITLE)
 
-static int comparePixels(const Pixel pixel1, const Pixel pixel2)
+static int comparePixels(const Color pixel1, const Color pixel2)
 {
 	if(pixel1.r != pixel2.r || pixel1.g != pixel2.g || pixel1.b != pixel2.b)
 		return(1);
@@ -126,9 +124,9 @@ static int comparePixels(const Pixel pixel1, const Pixel pixel2)
 	return(0);
 }
 
-static void assignColor
+static void drawToCanvas
 (
-	Pixel *pixel,
+	Color *pixel,
 	const int R,
 	const int G,
 	const int B,
@@ -140,10 +138,21 @@ static void assignColor
 	pixel->r = (int)(pixel->r * (1 - t) + R * t);
 	pixel->g = (int)(pixel->g * (1 - t) + G * t);
 	pixel->b = (int)(pixel->b * (1 - t) + B * t);
+}
 
-	//pixel->r = R;
-	//pixel->g = G;
-	//pixel->b = B;
+static void assignColor
+(
+	Color *pixel,
+	const int R,
+	const int G,
+	const int B,
+	const int A
+)
+{
+	pixel->r = R;
+	pixel->g = G;
+	pixel->b = B;
+	pixel->a = A;
 }
 
 
@@ -163,9 +172,9 @@ int initCanvas(
 	if(HEIGHT <= 0) return(1);
 
 	//Variable length array
-	kal_canvas.pixels = (Pixel *)malloc((WIDTH * HEIGHT) * sizeof(Pixel));
-	kal_canvas.previousPixels = (Pixel *)malloc((WIDTH * HEIGHT) * sizeof(Pixel));
-	//The first element stores the width and the second the height
+	kal_canvas.pixels = (Color *)malloc((WIDTH * HEIGHT) * sizeof(Color));
+	kal_canvas.previousPixels = (Color *)malloc((WIDTH * HEIGHT) * sizeof(Color));
+
 	kal_canvas.width = WIDTH;
 	kal_canvas.height = HEIGHT;
 
@@ -202,10 +211,10 @@ int displayCanvas()
 	{
 		for (int j = 0; j < kal_canvas.width; j++)
 		{
-			Pixel pixel1 = kal_canvas.pixels[(i * kal_canvas.width) + j];
-			Pixel previousPixel1 = kal_canvas.previousPixels[(i * kal_canvas.width) + j];
-			Pixel pixel2 = kal_canvas.pixels[((i + 1) * kal_canvas.width) + j];
-			Pixel previousPixel2 = kal_canvas.previousPixels[((i + 1) * kal_canvas.width) + j];
+			Color pixel1 = kal_canvas.pixels[(i * kal_canvas.width) + j];
+			Color previousPixel1 = kal_canvas.previousPixels[(i * kal_canvas.width) + j];
+			Color pixel2 = kal_canvas.pixels[((i + 1) * kal_canvas.width) + j];
+			Color previousPixel2 = kal_canvas.previousPixels[((i + 1) * kal_canvas.width) + j];
 
 			if(comparePixels(pixel1, previousPixel1) || comparePixels(pixel2, previousPixel2))
 			{
@@ -237,7 +246,7 @@ int drawPixel
 {
 	if(X > 0 && X < kal_canvas.width && Y > 0 && Y < kal_canvas.height)
 	{
-		assignColor(&kal_canvas.pixels[Y * kal_canvas.width + X], R, G, B, A);
+		drawToCanvas(&kal_canvas.pixels[Y * kal_canvas.width + X], R, G, B, A);
 	}
 	else
 		return(1);
@@ -245,7 +254,7 @@ int drawPixel
 	return(0);
 }
 
-int drawTexture(const int X, const int Y, const char PATH[100])
+int drawTexture(const int X, const int Y, const char PATH[])
 {
 	unsigned char* image = 0;
 	unsigned width, height;
@@ -275,6 +284,39 @@ int drawTexture(const int X, const int Y, const char PATH[100])
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Texture
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+Texture initTexture(const char *PATH)
+{
+	unsigned char* image = 0;
+	unsigned width, height;
+
+	lodepng_decode32_file(&image, &width, &height, PATH);
+
+	Texture texture;
+	texture.width = width;
+	texture.height = height;
+	texture.pixels = (Color *)malloc((width * height) * sizeof(Color));
+
+	for(int i = 0; i < height; i++)
+	{
+		for(int j = 0; j < width; j++)
+		{
+			assignColor
+			(
+				&texture.pixels[i * width + j],
+				image[i * width * 4 + j * 4],
+				image[i * width * 4 + j * 4 + 1],
+				image[i * width * 4 + j * 4 + 2],
+				image[i * width * 4 + j * 4 + 3]
+			);
+			//printf("(%d, %d, %d, %d)\n", image[i * width * 4 + j * 4], image[i * width * 4 + j * 4 + 1], image[i * width * 4 + j * 4 + 2], image[i * width * 4 + j * 4 + 3]);
+		}
+	}
+
+	//getchar();
+
+	return(texture);
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Misc
@@ -351,10 +393,72 @@ int E_drawTexture(lua_State *L)
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
 
-	char path[25];
+	char path[FILENAME_MAX];
 	sprintf(path, "%s", luaL_checkstring(L, 3));
 
 	drawTexture(x, y, path);
+
+	return(0);
+}
+
+int E_printTable(lua_State *L)
+{
+	int *data = calloc(1, sizeof(int));
+	int width, height;
+
+	lua_pushnil(L);
+	while (lua_next(L, -2) != 0)
+	{
+		if(lua_istable(L, -1))
+		{
+			int i = 1;
+
+			//read pixel info data to data[]
+			lua_pushnil(L);
+			while(lua_next(L, -2) != 0)
+			{
+				data = realloc(data, i * sizeof(int));
+				data[i - 1] = (int)lua_tonumber(L, -1);
+				lua_pop(L, 1);
+				i++;
+			}
+		}
+		else if(strcmp(lua_tostring(L, -2), "width") == 0)
+		{
+			width = lua_tonumber(L, -1);
+		}
+		else if(strcmp(lua_tostring(L, -2), "height") == 0)
+		{
+			height = lua_tonumber(L, -1);
+		}
+
+		lua_pop(L, 1);
+	}
+
+	//convert data[] to texture
+	Texture texture;
+	texture.pixels = (Color *)malloc((width * height) * sizeof(Color));
+	texture.width = width;
+	texture.height = height;
+
+	for(int i = 0; i < height - 1; i++)
+	{
+		for(int j = 0; j < width - 1; j++)
+		{
+			texture.pixels[i * width + j].r = data[(i * width + j) * 4];
+			texture.pixels[i * width + j].g = data[(i * width + j) * 4 + 1];
+			texture.pixels[i * width + j].b = data[(i * width + j) * 4 + 2];
+			texture.pixels[i * width + j].a = data[(i * width + j) * 4 + 3];
+		}
+	}
+
+	for(int i = 0; i < texture.height; i++)
+	{
+		for(int j = 0; j < texture.width; j++)
+		{
+			printf("(%d, %d, %d, %d)", texture.pixels[i * texture.width + j].r, texture.pixels[i * texture.width + j].g, texture.pixels[i * texture.width + j].b, texture.pixels[i * texture.width + j].a);
+		}
+	}
 
 	return(0);
 }
@@ -363,7 +467,55 @@ int E_drawTexture(lua_State *L)
 
 //-------- texture -----------------------------------------------------------//
 
+int E_initTexture(lua_State *L)
+{
+	char path[FILENAME_MAX];
 
+	sprintf(path, "%s", luaL_checkstring(L, 1));
+
+	Texture texture = initTexture(path);
+
+	lua_newtable(L);
+
+	lua_pushstring(L, "width");
+	lua_pushnumber(L, texture.width);
+	lua_settable(L, -3);
+
+	lua_pushstring(L, "height");
+	lua_pushnumber(L, texture.height);
+	lua_settable(L, -3);
+
+	lua_pushstring(L,"data");
+	lua_newtable(L);
+
+	for(int i = 0; i < texture.width; i++)
+	{
+		for(int j = 0; j < texture.width; j++)
+		{
+			Color pixel = texture.pixels[i * texture.width + j];
+
+			lua_pushnumber(L, (i * texture.width + j) * 4 + 1);
+			lua_pushnumber(L, pixel.r);
+			lua_settable(L, -3);
+
+			lua_pushnumber(L, (i * texture.width + j) * 4 + 1 + 1);
+			lua_pushnumber(L, pixel.g);
+			lua_settable(L, -3);
+
+			lua_pushnumber(L, (i * texture.width + j) * 4 + 2 + 1);
+			lua_pushnumber(L, pixel.b);
+			lua_settable(L, -3);
+
+			lua_pushnumber(L, (i * texture.width + j) * 4 + 3 + 1);
+			lua_pushnumber(L, pixel.a);
+			lua_settable(L, -3);
+		}
+	}
+
+	lua_settable(L, -3);
+
+	return(1);
+}
 
 //-------- misc --------------------------------------------------------------//
 
@@ -446,6 +598,8 @@ const struct luaL_Reg kaliumn[] =
 	{"displayCanvas", E_displayCanvas},
 	{"drawPixel", E_drawPixel},
 	{"drawTexture", E_drawTexture},
+	{"printTable", E_printTable},
+	{"initTexture", E_initTexture},
 	{"waitForKeyPress", E_waitForKeyPress},
 	{"getTime", E_getTime},
 	{"init", E_init},
