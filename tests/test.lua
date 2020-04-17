@@ -28,9 +28,19 @@ kal.waitForKeyPress()
 
 kal.term()]]
 
-texture = kal.initTexture("assets/pattern.png")
+width, height = kal.getWinWidth(), kal.getWinHeight()
+
+kal.initCanvas(width, height, 0, 0, 255)
+
+texture = kal.initTexture("assets/test.png")
+
+kal.drawTexture(texture, 10, 10)
 
 --tprint(texture, 1)
-kal.printTable(texture)
+--kal.printTable(texture)
+
+kal.displayCanvas()
 
 kal.waitForKeyPress()
+
+kal.term()

@@ -236,12 +236,12 @@ int displayCanvas()
 
 int drawPixel
 (
-		const int X,
-		const int Y,
-		const int R,
-		const int G,
-		const int B,
-		const int A
+	const int R,
+	const int G,
+	const int B,
+	const int A,
+	const int X,
+	const int Y
 )
 {
 	if(X > 0 && X < kal_canvas.width && Y > 0 && Y < kal_canvas.height)
@@ -254,7 +254,7 @@ int drawPixel
 	return(0);
 }
 
-int drawTexture(const int X, const int Y, const char PATH[])
+/*int drawTexture(const int X, const int Y, const char PATH[])
 {
 	unsigned char* image = 0;
 	unsigned width, height;
@@ -271,6 +271,24 @@ int drawTexture(const int X, const int Y, const char PATH[])
 			int a = image[i * width * 4 + j * 4 + 3];
 
 			drawPixel(X + j, Y + i, r, g, b, a);
+		}
+	}
+
+	return(0);
+}*/
+
+int drawTexture(const Texture image, const int X, const int Y)
+{
+	for(int i = 0; i < image.height; i++)
+	{
+		for(int j = 0; j < image.width; j++)
+		{
+			int r = image.pixels[i * image.width + j].r;
+			int g = image.pixels[i * image.width + j].g;
+			int b = image.pixels[i * image.width + j].b;
+			int a = image.pixels[i * image.width + j].a;
+
+			drawPixel(r, g, b, a, X + j, Y + i);
 		}
 	}
 
@@ -377,18 +395,18 @@ int E_displayCanvas(lua_State *L)
 
 int E_drawPixel(lua_State *L)
 {
-	int x = luaL_checknumber(L, 1);
-	int y = luaL_checknumber(L, 2);
-	int r = luaL_checknumber(L, 3);
-	int g = luaL_checknumber(L, 4);
-	int b = luaL_checknumber(L, 5);
-	int a = luaL_checknumber(L, 6);
-	drawPixel(x, y, r, g, b, a);
+	int r = luaL_checknumber(L, 1);
+	int g = luaL_checknumber(L, 2);
+	int b = luaL_checknumber(L, 3);
+	int a = luaL_checknumber(L, 4);
+	int x = luaL_checknumber(L, 5);
+	int y = luaL_checknumber(L, 6);
+	drawPixel(r, g, b, a, x, y);
 
 	return(0);
 }
 
-int E_drawTexture(lua_State *L)
+/*int E_drawTexture(lua_State *L)
 {
 	int x = luaL_checknumber(L, 1);
 	int y = luaL_checknumber(L, 2);
@@ -399,15 +417,19 @@ int E_drawTexture(lua_State *L)
 	drawTexture(x, y, path);
 
 	return(0);
-}
+}*/
 
-int E_printTable(lua_State *L)
+int E_drawTexture(lua_State *L)
 {
-	int *data = calloc(1, sizeof(int));
+	int *data = malloc(sizeof(int));
 	int width, height;
 
+	int x = lua_tonumber(L, 2);
+	int y = lua_tonumber(L, 3);
+
 	lua_pushnil(L);
-	while (lua_next(L, -2) != 0)
+
+	while(lua_next(L, 1) != 0)
 	{
 		if(lua_istable(L, -1))
 		{
@@ -441,9 +463,9 @@ int E_printTable(lua_State *L)
 	texture.width = width;
 	texture.height = height;
 
-	for(int i = 0; i < height - 1; i++)
+	for(int i = 0; i < height; i++)
 	{
-		for(int j = 0; j < width - 1; j++)
+		for(int j = 0; j < width; j++)
 		{
 			texture.pixels[i * width + j].r = data[(i * width + j) * 4];
 			texture.pixels[i * width + j].g = data[(i * width + j) * 4 + 1];
@@ -452,13 +474,7 @@ int E_printTable(lua_State *L)
 		}
 	}
 
-	for(int i = 0; i < texture.height; i++)
-	{
-		for(int j = 0; j < texture.width; j++)
-		{
-			printf("(%d, %d, %d, %d)", texture.pixels[i * texture.width + j].r, texture.pixels[i * texture.width + j].g, texture.pixels[i * texture.width + j].b, texture.pixels[i * texture.width + j].a);
-		}
-	}
+	drawTexture(texture, x, y);
 
 	return(0);
 }
@@ -598,7 +614,6 @@ const struct luaL_Reg kaliumn[] =
 	{"displayCanvas", E_displayCanvas},
 	{"drawPixel", E_drawPixel},
 	{"drawTexture", E_drawTexture},
-	{"printTable", E_printTable},
 	{"initTexture", E_initTexture},
 	{"waitForKeyPress", E_waitForKeyPress},
 	{"getTime", E_getTime},
