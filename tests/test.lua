@@ -36,8 +36,7 @@ texture = kal.initTexture("assets/test.png")
 
 kal.drawTexture(texture, 10, 10)
 
---tprint(texture, 1)
---kal.printTable(texture)
+kal.drawPixel(255, 0, 0, 255, 20, 20)
 
 kal.displayCanvas()
 
