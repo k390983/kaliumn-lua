@@ -10,9 +10,14 @@ LFLAGS = -l$(LUA)
 IFLAGS = -I/usr/include/$(LUA)/
 
 TARGET = kaliumn
-INCLUDES = src/includes/libbmp.c src/includes/lodepng.c
+INCLUDES = src/kaliumn_lua.c src/includes/lodepng.c
 
 default:
+	@echo ""
+	@echo "Please set target (lua, lua test, clean)"
+	@echo ""
+
+lua:
 	@echo ""
 	@echo "-------- COMPILE --------"
 	@echo ""
@@ -25,7 +30,7 @@ default:
 	@echo "-------- END --------"
 	@echo ""
 
-test:
+lua-test:
 	@echo ""
 	@echo "-------- COMPILE --------"
 	@echo ""

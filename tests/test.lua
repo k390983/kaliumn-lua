@@ -1,44 +1,56 @@
-function tprint (tbl, indent)
-  if not indent then indent = 0 end
-  for k, v in pairs(tbl) do
-    formatting = string.rep("  ", indent) .. k .. ": "
-    if type(v) == "table" then
-      print(formatting)
-      tprint(v, indent+1)
-    else
-      print(formatting .. v)
-    end
-  end
+function printTable(tbl, indent)
+	if not indent then indent = 0 end
+	for k, v in pairs(tbl) do
+		formatting = string.rep("  ", indent) .. k .. ": "
+		if type(v) == "table" then
+			print(formatting)
+			tprint(v, indent+1)
+		else
+			print(formatting .. v)
+		end
+	end
 end
 
+package.path = package.path .. ";../?.lua"
 kal = require "kaliumn"
 
---[[kal.init("Test")
-
-width, height = kal.getWinWidth(), kal.getWinHeight()
+--[[width, height = kal.getWinX(), kal.getWinY()
 
 kal.initCanvas(width, height, 0, 0, 255)
 
-kal.drawTexture(20, 20, "assets/test.png")
-kal.drawPixel(10, 10, 255, 0, 0, 100)
+ball = {
+	x = width / 2,
+	y = height /2,
+	xdir = 1,
+	ydir = 1,
+	texture = kal.initTexture("assets/ball.png")
+}
 
-kal.displayCanvas()
+while true do
+	if ball.x < 0 or ball.x > width - 10 then
+		ball.xdir = ball.xdir * -1
+	end
+
+	if ball.y < 0 or ball.y > height - 10 then
+		ball.ydir = ball.ydir * -1
+	end
+
+	ball.x = ball.x + ball.xdir
+	ball.y = ball.y + ball.ydir
+
+	kal.cleanCanvas(20, 20, 20)
+	kal.drawTexture(ball.texture, ball.x, ball.y)
+	kal.displayCanvasAll()
+
+	kal.waitForKeyPress()
+
+end]]
+
+print(kal.getTime())
 
 kal.waitForKeyPress()
 
-kal.term()]]
-
-width, height = kal.getWinWidth(), kal.getWinHeight()
-
-kal.initCanvas(width, height, 0, 0, 255)
-
-texture = kal.initTexture("assets/test.png")
-
-kal.drawTexture(texture, 10, 10)
-
-kal.drawPixel(255, 0, 0, 255, 20, 20)
-
-kal.displayCanvas()
+print(kal.getTime())
 
 kal.waitForKeyPress()
 
