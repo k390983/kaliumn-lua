@@ -135,4 +135,4 @@ void drawTexture(const Texture image, const int X, const int Y);
 // Misc
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-long int getTime();
+float getTime();

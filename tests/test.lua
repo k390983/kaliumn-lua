@@ -40,18 +40,21 @@ while true do
 
 	kal.cleanCanvas(20, 20, 20)
 	kal.drawTexture(ball.texture, ball.x, ball.y)
-	kal.displayCanvasAll()
+	kal.displayCanvas()
+	--kal.waitForKeyPress()
 
-	kal.waitForKeyPress()
+end
 
-end]]
+--print(kal.getTime())
+
+--kal.waitForKeyPress()
+
+--print(kal.getTime())
+
+--kal.waitForKeyPress()
+
+kal.term()]]
 
 print(kal.getTime())
-
 kal.waitForKeyPress()
-
 print(kal.getTime())
-
-kal.waitForKeyPress()
-
-kal.term()

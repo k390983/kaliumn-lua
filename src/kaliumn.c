@@ -49,8 +49,9 @@ SOFTWARE.
 
 //-------- external libraries ------------------------------------------------//
 
-// reading .png files <https://github.com/lvandeve/lodepng>
-#include "includes/lodepng.h"
+// reading images <https://github.com/nothings/stb>
+#define STB_IMAGE_IMPLEMENTATION
+#include "includes/stb_image.h"
 
 //-------- kaliumn.h ---------------------------------------------------------//
 
@@ -279,10 +280,10 @@ void drawPixel
 
 Texture initTexture(const char *PATH)
 {
-	unsigned char* image = 0;
-	unsigned width, height;
+	int width, height;
+	int components;
 
-	lodepng_decode32_file(&image, &width, &height, PATH);
+	unsigned char* image = stbi_load(PATH, &width, &height, &components, 4);
 
 	Texture texture;
 	texture.width = width;
@@ -325,12 +326,13 @@ void drawTexture(const Texture image, const int X, const int Y)
 // Misc
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-long int getTime()
+float getTime()
 {
 	struct timeval  tv;
 	gettimeofday(&tv, NULL);
 
 	long int time = (long int)((tv.tv_sec) * 1000 + (tv.tv_usec) / 1000);
+	float timeF = (float)(time % 10000000) / 1000;
 
-	return(time);
+	return(timeF);
 }

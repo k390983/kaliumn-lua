@@ -5,12 +5,12 @@ LUA = lua5.3
 RM = rm
 CP = cp
 
-CFLAGS = -Wall -shared -o
+CFLAGS = -Wall -shared -lm -o
 LFLAGS = -l$(LUA)
 IFLAGS = -I/usr/include/$(LUA)/
 
 TARGET = kaliumn
-INCLUDES = src/kaliumn_lua.c src/includes/lodepng.c
+INCLUDES = src/kaliumn.c
 
 default:
 	@echo ""
@@ -22,7 +22,7 @@ lua:
 	@echo "-------- COMPILE --------"
 	@echo ""
 
-	$(CC) src/$(TARGET).c $(INCLUDES) $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
+	$(CC) src/$(TARGET)Lua.c $(INCLUDES) $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
 
 	$(CP) $(TARGET).so tests
 
@@ -30,17 +30,9 @@ lua:
 	@echo "-------- END --------"
 	@echo ""
 
-lua-test:
+test:
 	@echo ""
-	@echo "-------- COMPILE --------"
-	@echo ""
-
-	$(CC) src/$(TARGET).c $(INCLUDES) $(CFLAGS) $(TARGET).so -fPIC $(LFLAGS) $(IFLAGS)
-
-	$(CP) $(TARGET).so tests
-
-	@echo ""
-	@echo "-------- RUN --------"
+	@echo "-------- TEST --------"
 	@echo ""
 
 	cd tests; $(LUA) test.lua

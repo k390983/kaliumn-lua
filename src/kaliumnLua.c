@@ -30,6 +30,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Includes
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -287,7 +291,7 @@ int E_getTime(lua_State *L)
 // Registering library
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-const struct luaL_Reg kaliumn_lua[] =
+const struct luaL_Reg kaliumn[] =
 {
 	// Window
 	{"getWinX", E_getWinX},
@@ -314,6 +318,10 @@ const struct luaL_Reg kaliumn_lua[] =
 
 int luaopen_kaliumn(lua_State *L)
 {
-	luaL_newlib(L, kaliumn_lua);
+	luaL_newlib(L, kaliumn);
 	return 1;
 }
+
+#ifdef __cplusplus
+}
+#endif

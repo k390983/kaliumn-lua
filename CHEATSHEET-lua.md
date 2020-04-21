@@ -175,7 +175,7 @@
 	Same as `getchar()` in c.
 
 * **getTime()**  
-	Returns current time in milliseconds.
+	Returns time since `init()` in seconds (micro second presicion).
 
 * **getDT()**  
 	Returns Δt(time between frames) in seconds.
