@@ -287,6 +287,13 @@ int E_getTime(lua_State *L)
 	return(1);
 }
 
+int E_getDT(lua_State *L)
+{
+	lua_pushnumber(L, getDT());
+
+	return(1);
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Registering library
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -313,6 +320,7 @@ const struct luaL_Reg kaliumn[] =
 	// Misc
 	{"waitForKeyPress", E_waitForKeyPress},
 	{"getTime", E_getTime},
+	{"getDT", E_getDT},
 	{NULL, NULL}
 };
 

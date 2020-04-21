@@ -154,6 +154,9 @@ void initCanvas(
 	kal_canvas.width = WIDTH;
 	kal_canvas.height = HEIGHT;
 
+	kal_canvas.prevDraw = getTime();
+	kal_canvas.dt = 0;
+
 	for(int i = 0; i < HEIGHT; ++i)
 	{
 		for(int j = 0; j < WIDTH; ++j)
@@ -218,6 +221,8 @@ void displayCanvas()
 			bottomPrevPixel.b = bottomPixel.b;
 		}
 	}
+	kal_canvas.dt = getTime() - kal_canvas.prevDraw;
+	kal_canvas.prevDraw = getTime();
 }
 
 void displayCanvasAll()
@@ -247,6 +252,8 @@ void displayCanvasAll()
 			bottomPrevPixel.b = bottomPixel.b;
 		}
 	}
+	kal_canvas.dt = getTime() - kal_canvas.prevDraw;
+	kal_canvas.prevDraw = getTime();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -328,11 +335,16 @@ void drawTexture(const Texture image, const int X, const int Y)
 
 float getTime()
 {
-	struct timeval  tv;
+	struct timeval tv;
 	gettimeofday(&tv, NULL);
 
 	long int time = (long int)((tv.tv_sec) * 1000 + (tv.tv_usec) / 1000);
 	float timeF = (float)(time % 10000000) / 1000;
 
 	return(timeF);
+}
+
+float getDT()
+{
+	return(kal_canvas.dt);
 }

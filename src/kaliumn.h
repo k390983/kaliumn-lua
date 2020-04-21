@@ -54,6 +54,7 @@ typedef struct Canvas
 	int width;
 	int height;
 	int drawMode;
+	float prevDraw;
 	float dt;
 	Color3 currentColor;
 	Color3 *pixels;
@@ -136,3 +137,5 @@ void drawTexture(const Texture image, const int X, const int Y);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 float getTime();
+
+float getDT();

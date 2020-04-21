@@ -179,6 +179,3 @@
 
 * **getDT()**  
 	Returns Δt(time between frames) in seconds.
-
-* **getFPS()**  
-	Returns FPS(1[s] / Δt[s]).
