@@ -14,6 +14,8 @@ end
 package.path = package.path .. ";../?.lua"
 kal = require "kaliumn"
 
+kal.init("test");
+
 width, height = kal.getWinX(), kal.getWinY()
 
 kal.initCanvas(width, height, 0, 0, 255)
@@ -21,12 +23,12 @@ kal.initCanvas(width, height, 0, 0, 255)
 ball = {
 	x = width / 2,
 	y = height /2,
-	xdir = 50,
-	ydir = 50,
+	--xdir = 50,
+	--ydir = 50,
 	texture = kal.initTexture("assets/ball.png")
 }
 
-while true do
+--[[while true do
 	if ball.x < 0 or ball.x > width - 10 then
 		ball.xdir = ball.xdir * -1
 	end
@@ -43,14 +45,25 @@ while true do
 	kal.displayCanvas()
 	--kal.waitForKeyPress()
 
+end]]
+i = 0
+
+while true do
+	kal.refreshKeys();
+
+	if kal.isCharPressed('c') == 1 then
+		break
+	end
+
+	if kal.isCharPressed('a') == 1 then ball.x = ball.x - 1 end
+	if kal.isCharPressed('d') == 1 then ball.x = ball.x + 1 end
+	if kal.isCharPressed('w') == 1 then ball.y = ball.y - 1 end
+	if kal.isCharPressed('s') == 1 then ball.y = ball.y + 1 end
+
+	kal.cleanCanvas(20, 20, 20)
+	kal.drawTexture(ball.texture, ball.x, ball.y)
+	kal.displayCanvas()
+
 end
-
---print(kal.getTime())
-
---kal.waitForKeyPress()
-
---print(kal.getTime())
-
---kal.waitForKeyPress()
 
 kal.term()

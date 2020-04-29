@@ -36,16 +36,21 @@ SOFTWARE.
 // Includes
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
+#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
+
 //-------- standard libraries ------------------------------------------------//
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <termios.h>
 
 //-------- POSIX libraries ---------------------------------------------------//
 
 #include <sys/ioctl.h>
 #include <sys/time.h>
+#include <sys/select.h>
 
 //-------- external libraries ------------------------------------------------//
 
@@ -62,6 +67,10 @@ SOFTWARE.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 Canvas kal_canvas;
+float kal_dt;
+struct termios kal_origTerm;
+char *keys;
+char *arrowKeys;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Internal functions
@@ -80,6 +89,43 @@ Canvas kal_canvas;
 #define showCursor() printf("\e[?25h")
 
 #define clearScreen() printf("\033[2J")
+
+void resetTerminal()
+{
+    tcsetattr(0, TCSANOW, &kal_origTerm);
+}
+
+void initTerminal()
+{
+    struct termios new_termios;
+
+    tcgetattr(0, &kal_origTerm);
+    memcpy(&new_termios, &kal_origTerm, sizeof(new_termios));
+
+    atexit(resetTerminal);
+    cfmakeraw(&new_termios);
+    tcsetattr(0, TCSANOW, &new_termios);
+}
+
+int keyHit()
+{
+    struct timeval tv = { 0L, 0L };
+    fd_set fds;
+    FD_ZERO(&fds);
+    FD_SET(0, &fds);
+    return select(1, &fds, NULL, NULL, &tv);
+}
+
+int getKey()
+{
+    int r;
+    unsigned char c;
+    if ((r = read(0, &c, sizeof(c))) < 0) {
+        return r;
+    } else {
+        return c;
+    }
+}
 
 static int compareColor3(const Color3 pixel1, const Color3 pixel2)
 {
@@ -121,6 +167,7 @@ void setWinTitle(const char TITLE[])
 void init(const char TITLE[])
 {
 	setWinTitle(TITLE);
+	initTerminal();
 	hideCursor();
 	moveCursor(0, 0);
 	clearScreen();
@@ -155,7 +202,7 @@ void initCanvas(
 	kal_canvas.height = HEIGHT;
 
 	kal_canvas.prevDraw = getTime();
-	kal_canvas.dt = 0;
+	kal_dt = 0;
 
 	for(int i = 0; i < HEIGHT; ++i)
 	{
@@ -221,7 +268,10 @@ void displayCanvas()
 			bottomPrevPixel.b = bottomPixel.b;
 		}
 	}
-	kal_canvas.dt = getTime() - kal_canvas.prevDraw;
+
+	refreshKeys();
+
+	kal_dt = getTime() - kal_canvas.prevDraw;
 	kal_canvas.prevDraw = getTime();
 }
 
@@ -252,7 +302,10 @@ void displayCanvasAll()
 			bottomPrevPixel.b = bottomPixel.b;
 		}
 	}
-	kal_canvas.dt = getTime() - kal_canvas.prevDraw;
+
+	refreshKeys();
+
+	kal_dt = getTime() - kal_canvas.prevDraw;
 	kal_canvas.prevDraw = getTime();
 }
 
@@ -330,6 +383,63 @@ void drawTexture(const Texture image, const int X, const int Y)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Input
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+void refreshKeys()
+{
+	int count = 0;
+	int aCount = 0;
+
+	free(keys);
+	free(arrowKeys);
+
+	while(!keyHit())
+	{
+		char c = getKey();
+		if(c != 27)
+		{
+			count++;
+			keys = realloc(keys, count + 1 * sizeof(char));
+			keys[count] = c;
+		}
+		else
+		{
+			aCount++;
+			arrowKeys = realloc(arrowKeys, aCount + 1 * sizeof(char));
+			getKey();
+			arrowKeys[aCount] = getKey();
+		}
+	}
+	system("clear");
+	printf("%s", keys);
+}
+
+int isCharPressed(char ch)
+{
+	int i = 0;
+	while(keys[i] != EOF)
+	{
+		if(keys[i] == ch)
+			return(1);
+		i++;
+	}
+	return(0);
+}
+
+int isArrowPressed(char dir)
+{
+	int i = 0;
+	while(keys[i] != EOF)
+	{
+		if(keys[i] == dir)
+			return(1);
+		i++;
+	}
+	return(0);
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Misc
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
@@ -346,5 +456,5 @@ float getTime()
 
 float getDT()
 {
-	return(kal_canvas.dt);
+	return(kal_dt);
 }

@@ -270,6 +270,37 @@ int E_drawTexture(lua_State *L)
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// Input
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+int E_refreshKeys(lua_State *L)
+{
+	refreshKeys();
+	return(0);
+}
+
+int E_isCharPressed(lua_State *L)
+{
+	char key[100];
+	sprintf(key, "%s", luaL_checkstring(L, 1));
+
+	if(isCharPressed(key[0]))
+		lua_pushnumber(L, 1);
+	else
+		lua_pushnumber(L, 0);
+
+	return(1);
+}
+
+int E_isArrowPressed(lua_State *L)
+{
+	char key[100];
+	sprintf(key, "%s", luaL_checkstring(L, 1));
+	lua_pushnumber(L, isArrowPressed(key[0]));
+	return(1);
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // Misc
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
@@ -317,6 +348,10 @@ const struct luaL_Reg kaliumn[] =
 	// Textures
 	{"initTexture", E_initTexture},
 	{"drawTexture", E_drawTexture},
+	// Input
+	{"refreshKeys", E_refreshKeys},
+	{"isCharPressed", E_isCharPressed},
+	{"isArrowPressed", E_isArrowPressed},
 	// Misc
 	{"waitForKeyPress", E_waitForKeyPress},
 	{"getTime", E_getTime},
